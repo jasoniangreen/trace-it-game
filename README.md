@@ -38,3 +38,11 @@ src/
   components/     # Grid, Cell, PathLine (SVG overlay), HUD, WinModal
   data/           # Level definitions
 ```
+
+## Disclaimer
+
+Inspired by path-tracing puzzle games. Built for fun and education.
+
+## License
+
+[MIT](LICENSE)
