@@ -31,9 +31,17 @@ export function useGameState(level: Level) {
           return level.numbers[key] === 1 ? [cell] : currentPath
         }
 
-        // Clicked a visited cell: truncate path back to it
+        // Retrace: only undo one step by moving back to the previous cell
+        if (currentPath.length >= 2) {
+          const prev = currentPath[currentPath.length - 2]
+          if (prev[0] === row && prev[1] === col) {
+            return currentPath.slice(0, -1)
+          }
+        }
+
+        // Ignore moves to any other visited cell
         if (buildVisitedSet(currentPath).has(key)) {
-          return truncatePath(currentPath, cell)
+          return currentPath
         }
 
         // New cell: validate adjacency, wall, number order

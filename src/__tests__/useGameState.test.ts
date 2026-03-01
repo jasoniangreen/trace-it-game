@@ -41,22 +41,22 @@ describe('useGameState', () => {
     expect(result.current.path).toEqual([[0, 0]])
   })
 
-  it('clicking visited cell truncates back to it', () => {
+  it('retracing to previous cell undoes one step', () => {
     const { result } = renderHook(() => useGameState(level1))
     act(() => result.current.tryMove(0, 0))
     act(() => result.current.tryMove(0, 1))
-    act(() => result.current.tryMove(0, 0)) // visited — truncates to [0,0]
+    act(() => result.current.tryMove(0, 0)) // previous cell — undo one step
     expect(result.current.path).toEqual([[0, 0]])
   })
 
-  it('truncates path when clicking a visited cell adjacent to nothing special', () => {
+  it('ignores moves to visited cells that are not the previous cell', () => {
     const { result } = renderHook(() => useGameState(level1))
     act(() => result.current.tryMove(0, 0))
     act(() => result.current.tryMove(0, 1))
     act(() => result.current.tryMove(0, 2))
-    // Click on 0,1 which is in the path — truncate back to it
-    act(() => result.current.tryMove(0, 1))
-    expect(result.current.path).toEqual([[0, 0], [0, 1]])
+    // Click on 0,0 which is visited but not the previous cell — ignored
+    act(() => result.current.tryMove(0, 0))
+    expect(result.current.path).toEqual([[0, 0], [0, 1], [0, 2]])
   })
 
   it('blocks moves through walls', () => {
