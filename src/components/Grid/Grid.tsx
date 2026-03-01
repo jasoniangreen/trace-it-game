@@ -13,38 +13,58 @@ interface GridProps {
   isComplete: boolean
 }
 
-type WallEdge = 'top' | 'bottom' | 'left' | 'right'
-
-function getWallEdges(
-  wallSet: Set<string>,
-  row: number,
-  col: number,
-  rows: number,
-  cols: number,
-): WallEdge[] {
-  const edges: WallEdge[] = []
-  if (row > 0 && wallSet.has(`${row},${col}|${row - 1},${col}`)) edges.push('top')
-  if (row < rows - 1 && wallSet.has(`${row},${col}|${row + 1},${col}`)) edges.push('bottom')
-  if (col > 0 && wallSet.has(`${row},${col}|${row},${col - 1}`)) edges.push('left')
-  if (col < cols - 1 && wallSet.has(`${row},${col}|${row},${col + 1}`)) edges.push('right')
-  return edges
-}
-
 export function Grid({ level, path, visited, head, isComplete }: GridProps) {
   const wallSet = useMemo(() => buildWallSet(level.walls), [level.walls])
   const headKey = head ? cellKey(head) : null
+
+  // Wall overlays absolutely positioned via CSS custom properties
+  const wallOverlays = useMemo(() => {
+    return level.walls.map(([a, b]) => {
+      const [r1, c1] = a
+      const [r2, c2] = b
+      const isHorizontal = r1 !== r2
+      const minR = Math.min(r1, r2)
+      const minC = Math.min(c1, c2)
+      const key = `wall-${r1},${c1}-${r2},${c2}`
+
+      // Position walls at the edge between the two cells
+      // Using CSS calc with var(--cell-size) and var(--cell-gap)
+      if (isHorizontal) {
+        // Horizontal line between row minR and minR+1, at column minC
+        return (
+          <div
+            key={key}
+            className="grid__wall grid__wall--horizontal"
+            style={{
+              '--wall-top': `calc(${minR + 1} * (var(--cell-size) + var(--cell-gap)) - var(--cell-gap) / 2)`,
+              '--wall-left': `calc(${minC} * (var(--cell-size) + var(--cell-gap)))`,
+            } as React.CSSProperties}
+          />
+        )
+      } else {
+        // Vertical line between col minC and minC+1, at row minR
+        return (
+          <div
+            key={key}
+            className="grid__wall grid__wall--vertical"
+            style={{
+              '--wall-top': `calc(${minR} * (var(--cell-size) + var(--cell-gap)))`,
+              '--wall-left': `calc(${minC + 1} * (var(--cell-size) + var(--cell-gap)) - var(--cell-gap) / 2)`,
+            } as React.CSSProperties}
+          />
+        )
+      }
+    })
+  }, [level.walls])
 
   const cells = []
   for (let r = 0; r < level.rows; r++) {
     for (let c = 0; c < level.cols; c++) {
       const key = cellKey([r, c])
-      const wallEdges = getWallEdges(wallSet, r, c, level.rows, level.cols)
-      const wallClasses = wallEdges.map((e) => `grid__cell--wall-${e}`).join(' ')
-
       cells.push(
         <div
           key={key}
-          className={`grid__cell ${wallClasses}`}
+          className="grid__cell"
           data-row={r}
           data-col={c}
         >
@@ -71,6 +91,7 @@ export function Grid({ level, path, visited, head, isComplete }: GridProps) {
       }}
     >
       {cells}
+      {wallOverlays}
     </div>
   )
 }
