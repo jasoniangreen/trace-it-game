@@ -1,0 +1,103 @@
+.cell {
+  position: relative;
+  width: var(--cell-size);
+  height: var(--cell-size);
+  background: var(--cell-bg);
+  border-radius: var(--cell-radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.1s ease, box-shadow 0.15s ease;
+  user-select: none;
+  -webkit-user-select: none;
+  overflow: hidden;
+}
+
+.cell:hover:not(.cell--path) {
+  background: var(--cell-bg-hover);
+}
+
+.cell--path {
+  background: var(--cell-bg-path);
+  box-shadow:
+    inset 0 0 12px rgba(0, 229, 255, 0.15),
+    0 0 8px rgba(0, 229, 255, 0.1);
+}
+
+.cell--head {
+  background: var(--cell-bg-head);
+  box-shadow:
+    inset 0 0 16px rgba(0, 229, 255, 0.25),
+    0 0 var(--glow-spread) rgba(0, 229, 255, 0.3),
+    0 0 24px rgba(0, 229, 255, 0.1);
+}
+
+.cell--start.cell--path {
+  box-shadow:
+    inset 0 0 12px rgba(0, 255, 136, 0.2),
+    0 0 8px rgba(0, 255, 136, 0.15);
+}
+
+.cell--start.cell--head {
+  box-shadow:
+    inset 0 0 16px rgba(0, 255, 136, 0.3),
+    0 0 var(--glow-spread) rgba(0, 255, 136, 0.3);
+}
+
+/* Win pulse animation */
+.cell--complete {
+  animation: pulse-glow 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes pulse-glow {
+  from {
+    box-shadow:
+      inset 0 0 12px rgba(0, 229, 255, 0.2),
+      0 0 8px rgba(0, 229, 255, 0.15);
+  }
+  to {
+    box-shadow:
+      inset 0 0 20px rgba(0, 255, 136, 0.35),
+      0 0 20px rgba(0, 255, 136, 0.3),
+      0 0 40px rgba(0, 229, 255, 0.15);
+  }
+}
+
+/* Glow underlay for path cells */
+.cell__glow {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle at center,
+    rgba(0, 229, 255, 0.08) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.cell__number {
+  position: relative;
+  z-index: 1;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--neon-cyan);
+  text-shadow: 0 0 8px rgba(0, 229, 255, 0.5);
+  letter-spacing: 0.5px;
+}
+
+.cell--path .cell__number {
+  color: var(--neon-green);
+  text-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
+}
+
+.cell--complete .cell__number {
+  animation: number-pulse 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes number-pulse {
+  from { text-shadow: 0 0 8px rgba(0, 255, 136, 0.4); }
+  to { text-shadow: 0 0 16px rgba(0, 255, 136, 0.8), 0 0 30px rgba(0, 229, 255, 0.3); }
+}

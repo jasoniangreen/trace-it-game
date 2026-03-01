@@ -1,0 +1,67 @@
+.grid {
+  display: grid;
+  gap: var(--cell-gap);
+  padding: 16px;
+  background: var(--bg-surface);
+  border-radius: 12px;
+  border: 1px solid rgba(0, 229, 255, 0.08);
+  box-shadow:
+    0 0 40px rgba(0, 0, 0, 0.5),
+    inset 0 0 30px rgba(0, 229, 255, 0.02);
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.grid__cell {
+  position: relative;
+}
+
+/* Wall indicators — thick colored borders with glow */
+.grid__cell--wall-top::before,
+.grid__cell--wall-bottom::after {
+  content: '';
+  position: absolute;
+  left: -1px;
+  right: -1px;
+  height: 3px;
+  background: var(--wall-color);
+  box-shadow: 0 0 6px rgba(255, 51, 85, 0.6);
+  z-index: 2;
+  border-radius: 1px;
+}
+
+.grid__cell--wall-top::before {
+  top: -2px;
+}
+
+.grid__cell--wall-bottom::after {
+  bottom: -2px;
+}
+
+.grid__cell--wall-left,
+.grid__cell--wall-right {
+  /* Use outline trick for left/right since ::before/after are taken by top/bottom */
+}
+
+/* For left/right walls, use box-shadow on inner elements via extra wrappers.
+   Simpler: use a dedicated wall overlay approach. */
+
+/* Actually, let's use a single approach with pseudo-elements and manage conflicts.
+   Cells rarely have both horizontal and vertical walls, so let's use a practical approach:
+   left/right walls use an inner box-shadow on the cell itself. */
+
+.grid__cell--wall-left {
+  box-shadow: inset 3px 0 0 0 var(--wall-color), inset 3px 0 6px -2px rgba(255, 51, 85, 0.4);
+}
+
+.grid__cell--wall-right {
+  box-shadow: inset -3px 0 0 0 var(--wall-color), inset -3px 0 6px -2px rgba(255, 51, 85, 0.4);
+}
+
+/* Handle combined wall cases */
+.grid__cell--wall-left.grid__cell--wall-right {
+  box-shadow:
+    inset 3px 0 0 0 var(--wall-color), inset 3px 0 6px -2px rgba(255, 51, 85, 0.4),
+    inset -3px 0 0 0 var(--wall-color), inset -3px 0 6px -2px rgba(255, 51, 85, 0.4);
+}
