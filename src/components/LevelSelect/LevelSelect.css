@@ -1,0 +1,127 @@
+.level-select {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 32px 16px;
+  width: 100%;
+  height: 100%;
+}
+
+.level-select__title {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 900;
+  font-size: clamp(36px, 8vw, 56px);
+  color: var(--neon-cyan);
+  text-shadow:
+    0 0 12px rgba(0, 229, 255, 0.4),
+    0 0 40px rgba(0, 229, 255, 0.15);
+  text-transform: uppercase;
+  letter-spacing: 4px;
+}
+
+.level-select__subtitle {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  color: var(--text-dim);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-top: -12px;
+}
+
+.level-select__grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 360px;
+  margin-top: 12px;
+}
+
+.level-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  background: var(--bg-surface);
+  border: 1px solid rgba(0, 229, 255, 0.08);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+  color: var(--text-color);
+}
+
+.level-card:hover {
+  border-color: rgba(0, 229, 255, 0.25);
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.08);
+  transform: translateY(-1px);
+}
+
+.level-card:active {
+  transform: translateY(0);
+}
+
+.level-card--done {
+  border-color: rgba(0, 255, 136, 0.15);
+}
+
+.level-card--done:hover {
+  border-color: rgba(0, 255, 136, 0.3);
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.08);
+}
+
+.level-card__number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: var(--cell-bg);
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--neon-cyan);
+  text-shadow: 0 0 6px rgba(0, 229, 255, 0.4);
+  flex-shrink: 0;
+}
+
+.level-card--done .level-card__number {
+  color: var(--neon-green);
+  text-shadow: 0 0 6px rgba(0, 255, 136, 0.4);
+}
+
+.level-card__name {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+  flex: 1;
+}
+
+.level-card__size {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--text-dim);
+}
+
+.level-card__check {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--neon-green);
+  color: var(--bg-dark);
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(0, 255, 136, 0.4);
+}
