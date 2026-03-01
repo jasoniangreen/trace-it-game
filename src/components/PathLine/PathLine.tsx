@@ -70,7 +70,7 @@ export function PathLine({
       viewBox={`0 0 ${w} ${h}`}
     >
       <defs>
-        <linearGradient id="path-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <linearGradient id="path-grad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2={w} y2={h}>
           <stop offset="0%" stopColor="var(--neon-green)" />
           <stop offset="100%" stopColor="var(--neon-cyan)" />
         </linearGradient>

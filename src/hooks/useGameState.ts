@@ -21,42 +21,43 @@ export function useGameState(level: Level) {
     (row: number, col: number) => {
       if (isComplete) return
 
-      const cell: Cell = [row, col]
-      const key = cellKey(cell)
+      setPath((currentPath) => {
+        const cell: Cell = [row, col]
+        const key = cellKey(cell)
+        const currentHead = currentPath.length > 0 ? currentPath[currentPath.length - 1] : null
 
-      // Empty path: must start on cell numbered 1
-      if (path.length === 0) {
-        if (level.numbers[key] === 1) {
-          setPath([cell])
+        // Empty path: must start on cell numbered 1
+        if (currentPath.length === 0) {
+          return level.numbers[key] === 1 ? [cell] : currentPath
         }
-        return
-      }
 
-      // Clicked a visited cell: truncate path back to it
-      if (visited.has(key)) {
-        setPath(truncatePath(path, cell))
-        return
-      }
+        // Clicked a visited cell: truncate path back to it
+        if (buildVisitedSet(currentPath).has(key)) {
+          return truncatePath(currentPath, cell)
+        }
 
-      // New cell: validate adjacency, wall, number order
-      if (!isAdjacent(head!, cell)) return
-      if (hasWall(wallSet, head![0], head![1], row, col)) return
-      if (!isNumberOrderValid(level.numbers, path, cell)) return
+        // New cell: validate adjacency, wall, number order
+        if (!isAdjacent(currentHead!, cell)) return currentPath
+        if (hasWall(wallSet, currentHead![0], currentHead![1], row, col)) return currentPath
+        if (!isNumberOrderValid(level.numbers, currentPath, cell)) return currentPath
 
-      const newPath = addToPath(path, cell)
-      setPath(newPath)
-
-      if (checkWin(level, newPath)) {
-        setIsComplete(true)
-      }
+        return addToPath(currentPath, cell)
+      })
     },
-    [path, visited, head, wallSet, level, isComplete],
+    [wallSet, level, isComplete],
   )
 
+  // Detect win from path changes instead of inside tryMove
+  useEffect(() => {
+    if (!isComplete && path.length > 0 && checkWin(level, path)) {
+      setIsComplete(true)
+    }
+  }, [path, level, isComplete])
+
   const undo = useCallback(() => {
-    setPath(undoPath(path))
+    setPath((p) => undoPath(p))
     setIsComplete(false)
-  }, [path])
+  }, [])
 
   const reset = useCallback(() => {
     setPath([])
