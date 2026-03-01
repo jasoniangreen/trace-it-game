@@ -74,6 +74,24 @@
   box-shadow: 0 0 20px rgba(0, 255, 136, 0.08);
 }
 
+.level-card--planner {
+  margin-top: 12px;
+  border-style: dashed;
+  border-color: rgba(255, 171, 0, 0.2);
+  max-width: 360px;
+  width: 100%;
+}
+
+.level-card--planner:hover {
+  border-color: rgba(255, 171, 0, 0.5);
+  box-shadow: 0 0 20px rgba(255, 171, 0, 0.1);
+}
+
+.level-card--planner .level-card__number {
+  color: var(--neon-amber);
+  text-shadow: 0 0 6px rgba(255, 171, 0, 0.4);
+}
+
 .level-card__number {
   display: flex;
   align-items: center;

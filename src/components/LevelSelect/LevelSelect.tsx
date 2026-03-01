@@ -31,6 +31,15 @@ export function LevelSelect({ onSelect, isComplete }: LevelSelectProps) {
           )
         })}
       </div>
+      {import.meta.env.DEV && (
+        <button
+          className="level-card level-card--planner"
+          onClick={() => { window.location.hash = '#level-planner' }}
+        >
+          <span className="level-card__number">+</span>
+          <span className="level-card__name">Level Planner</span>
+        </button>
+      )}
     </div>
   )
 }
