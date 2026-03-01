@@ -60,3 +60,19 @@ body::before {
   align-items: center;
   justify-content: center;
 }
+
+/* Responsive: scale cells to fit viewport */
+@media (max-width: 480px) {
+  :root {
+    --cell-size: 56px;
+    --cell-gap: 2px;
+    --glow-spread: 8px;
+  }
+}
+
+@media (max-width: 360px) {
+  :root {
+    --cell-size: 48px;
+    --cell-gap: 2px;
+  }
+}
