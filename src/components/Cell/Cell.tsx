@@ -25,7 +25,6 @@ export function Cell({ number, isPath, isHead, isStart, isComplete }: CellProps)
   return (
     <div className={classes}>
       {number !== undefined && <span className="cell__number">{number}</span>}
-      {isPath && <div className="cell__glow" />}
     </div>
   )
 }

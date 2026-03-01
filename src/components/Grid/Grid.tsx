@@ -1,7 +1,9 @@
-import { useMemo } from 'react'
+import { useMemo, useRef } from 'react'
 import { Cell } from '../Cell/Cell'
+import { PathLine } from '../PathLine/PathLine'
 import { buildWallSet } from '../../logic/validation'
 import { cellKey } from '../../logic/pathUtils'
+import { useGridMetrics } from '../../hooks/useGridMetrics'
 import type { Cell as CellType, Level } from '../../types'
 import './Grid.css'
 
@@ -14,6 +16,8 @@ interface GridProps {
 }
 
 export function Grid({ level, path, visited, head, isComplete }: GridProps) {
+  const gridRef = useRef<HTMLDivElement>(null)
+  const { cellSize, cellGap } = useGridMetrics(gridRef)
   const wallSet = useMemo(() => buildWallSet(level.walls), [level.walls])
   const headKey = head ? cellKey(head) : null
 
@@ -84,6 +88,7 @@ export function Grid({ level, path, visited, head, isComplete }: GridProps) {
 
   return (
     <div
+      ref={gridRef}
       className="grid"
       style={{
         gridTemplateColumns: `repeat(${level.cols}, var(--cell-size))`,
@@ -91,6 +96,14 @@ export function Grid({ level, path, visited, head, isComplete }: GridProps) {
       }}
     >
       {cells}
+      <PathLine
+        path={path}
+        rows={level.rows}
+        cols={level.cols}
+        cellSize={cellSize}
+        cellGap={cellGap}
+        isComplete={isComplete}
+      />
       {wallOverlays}
     </div>
   )

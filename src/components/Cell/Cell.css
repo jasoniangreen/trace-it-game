@@ -18,25 +18,6 @@
   background: var(--cell-bg-hover);
 }
 
-.cell--path {
-  background: var(--cell-bg-path);
-  box-shadow:
-    inset 0 0 12px rgba(0, 229, 255, 0.15),
-    0 0 8px rgba(0, 229, 255, 0.1);
-  animation: cell-join 0.12s ease-out;
-}
-
-@keyframes cell-join {
-  from {
-    transform: scale(0.88);
-    opacity: 0.7;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
 .cell--head {
   background: var(--cell-bg-head);
   box-shadow:
@@ -45,48 +26,10 @@
     0 0 24px rgba(0, 229, 255, 0.1);
 }
 
-.cell--start.cell--path {
-  box-shadow:
-    inset 0 0 12px rgba(0, 255, 136, 0.2),
-    0 0 8px rgba(0, 255, 136, 0.15);
-}
-
 .cell--start.cell--head {
   box-shadow:
     inset 0 0 16px rgba(0, 255, 136, 0.3),
     0 0 var(--glow-spread) rgba(0, 255, 136, 0.3);
-}
-
-/* Win pulse animation */
-.cell--complete {
-  animation: pulse-glow 1.2s ease-in-out infinite alternate;
-}
-
-@keyframes pulse-glow {
-  from {
-    box-shadow:
-      inset 0 0 12px rgba(0, 229, 255, 0.2),
-      0 0 8px rgba(0, 229, 255, 0.15);
-  }
-  to {
-    box-shadow:
-      inset 0 0 20px rgba(0, 255, 136, 0.35),
-      0 0 20px rgba(0, 255, 136, 0.3),
-      0 0 40px rgba(0, 229, 255, 0.15);
-  }
-}
-
-/* Glow underlay for path cells */
-.cell__glow {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: radial-gradient(
-    circle at center,
-    rgba(0, 229, 255, 0.08) 0%,
-    transparent 70%
-  );
-  pointer-events: none;
 }
 
 .cell__number {
