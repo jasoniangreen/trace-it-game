@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback, useEffect } from 'react'
 import type { Cell, Level } from '../types'
 import { isAdjacent, buildWallSet, hasWall, isNumberOrderValid, checkWin } from '../logic/validation'
-import { addToPath, truncatePath, undoPath, cellKey, buildVisitedSet } from '../logic/pathUtils'
+import { addToPath, undoPath, cellKey, buildVisitedSet } from '../logic/pathUtils'
 
 export function useGameState(level: Level) {
   const [path, setPath] = useState<Cell[]>([])
