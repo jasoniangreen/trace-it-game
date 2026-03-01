@@ -32,10 +32,10 @@ describe('level data', () => {
         }
       })
 
-      it('has number 1 and a highest number equal to total cells', () => {
-        const nums = Object.values(level.numbers)
-        expect(nums).toContain(1)
-        expect(Math.max(...nums)).toBe(level.rows * level.cols)
+      it('has sequential numbers starting from 1', () => {
+        const nums = Object.values(level.numbers).sort((a, b) => a - b)
+        expect(nums[0]).toBe(1)
+        nums.forEach((n, i) => expect(n).toBe(i + 1))
       })
 
       it('has a valid solution', () => {

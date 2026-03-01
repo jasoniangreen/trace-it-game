@@ -6,7 +6,7 @@ export const levels: Level[] = [
     name: 'First Steps',
     cols: 3,
     rows: 3,
-    numbers: { '0,0': 1, '2,2': 9 },
+    numbers: { '0,0': 1, '2,2': 2 },
     walls: [],
     solution: [
       [0, 0], [0, 1], [0, 2],
@@ -19,7 +19,7 @@ export const levels: Level[] = [
     name: 'Walled Garden',
     cols: 4,
     rows: 4,
-    numbers: { '0,0': 1, '0,3': 6, '3,0': 16 },
+    numbers: { '0,0': 1, '0,3': 2, '3,0': 3 },
     walls: [[[1, 1], [1, 2]]],
     solution: [
       [0, 0], [1, 0], [1, 1], [0, 1], [0, 2], [0, 3],
@@ -32,7 +32,7 @@ export const levels: Level[] = [
     name: 'Neon Maze',
     cols: 5,
     rows: 5,
-    numbers: { '0,0': 1, '1,3': 7, '3,0': 20, '4,4': 25 },
+    numbers: { '0,0': 1, '1,3': 2, '3,0': 3, '4,4': 4 },
     walls: [
       [[0, 1], [1, 1]],
       [[0, 3], [1, 3]],
