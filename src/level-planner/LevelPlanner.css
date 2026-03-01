@@ -1,0 +1,263 @@
+.planner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding: 24px 16px;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.planner__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 480px;
+}
+
+.planner__back-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(0, 229, 255, 0.15);
+  border-radius: 8px;
+  background: var(--bg-surface);
+  color: var(--neon-cyan);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.planner__back-btn:hover {
+  border-color: rgba(0, 229, 255, 0.4);
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.15);
+}
+
+.planner__title {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  font-size: clamp(20px, 5vw, 28px);
+  color: var(--neon-cyan);
+  text-shadow: 0 0 12px rgba(0, 229, 255, 0.3);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* Shared panel styles */
+.planner-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  max-width: 480px;
+}
+
+.planner-panel__label {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--text-dim);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.planner-panel__row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.planner-panel__row-label {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--text-color);
+  min-width: 100px;
+}
+
+/* Toggle button group */
+.toggle-group {
+  display: flex;
+  gap: 4px;
+}
+
+.toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 36px;
+  border: 1px solid rgba(0, 229, 255, 0.1);
+  border-radius: 6px;
+  background: var(--cell-bg);
+  color: var(--text-dim);
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.toggle-btn:hover {
+  border-color: rgba(0, 229, 255, 0.3);
+  color: var(--text-color);
+}
+
+.toggle-btn--active {
+  border-color: var(--neon-cyan);
+  color: var(--neon-cyan);
+  background: rgba(0, 229, 255, 0.08);
+  box-shadow: 0 0 8px rgba(0, 229, 255, 0.15);
+}
+
+/* Primary action button */
+.planner-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 32px;
+  border: 1px solid rgba(0, 229, 255, 0.3);
+  border-radius: 10px;
+  background: rgba(0, 229, 255, 0.06);
+  color: var(--neon-cyan);
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.planner-btn:hover:not(:disabled) {
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.15);
+}
+
+.planner-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.planner-btn--green {
+  border-color: rgba(0, 255, 136, 0.3);
+  background: rgba(0, 255, 136, 0.06);
+  color: var(--neon-green);
+}
+
+.planner-btn--green:hover:not(:disabled) {
+  border-color: var(--neon-green);
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.15);
+}
+
+.planner-btn--small {
+  padding: 8px 16px;
+  font-size: 12px;
+}
+
+/* Drawing phase */
+.path-editor__status {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--text-color);
+}
+
+.path-editor__status-count {
+  color: var(--neon-cyan);
+}
+
+.path-editor__status--complete .path-editor__status-count {
+  color: var(--neon-green);
+}
+
+.path-editor__actions {
+  display: flex;
+  gap: 12px;
+}
+
+/* Config phase */
+.config-panel__slider-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.config-panel__slider-label {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--text-color);
+  min-width: 120px;
+}
+
+.config-panel__slider-value {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--neon-cyan);
+  min-width: 32px;
+  text-align: right;
+}
+
+.config-panel__slider {
+  flex: 1;
+  accent-color: var(--neon-cyan);
+  height: 4px;
+}
+
+.config-panel__info {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 14px;
+  color: var(--text-dim);
+}
+
+.config-panel__error {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 14px;
+  color: #ff3355;
+  text-align: center;
+}
+
+.config-panel__progress {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 14px;
+  color: var(--text-dim);
+}
+
+/* Preview phase */
+.preview-panel__actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.preview-panel__copied {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 14px;
+  color: var(--neon-green);
+  animation: fade-in 0.2s ease;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.planner-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 18px;
+  color: var(--text-dim);
+}
