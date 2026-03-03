@@ -74,22 +74,93 @@
   box-shadow: 0 0 20px rgba(0, 255, 136, 0.08);
 }
 
-.level-card--planner {
-  margin-top: 12px;
-  border-style: dashed;
-  border-color: rgba(255, 171, 0, 0.2);
-  max-width: 360px;
+.level-select__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
   width: 100%;
+  max-width: 360px;
+  margin-top: 24px;
 }
 
-.level-card--planner:hover {
-  border-color: rgba(255, 171, 0, 0.5);
-  box-shadow: 0 0 20px rgba(255, 171, 0, 0.1);
+.level-select__action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px 24px;
+  background: var(--bg-surface);
+  border: 1px solid rgba(0, 229, 255, 0.15);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  color: var(--text-color);
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+  letter-spacing: 1px;
 }
 
-.level-card--planner .level-card__number {
-  color: var(--neon-amber);
-  text-shadow: 0 0 6px rgba(255, 171, 0, 0.4);
+.level-select__action-btn:hover {
+  border-color: rgba(0, 229, 255, 0.4);
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.1);
+  transform: translateY(-1px);
+}
+
+.level-select__action-btn:active {
+  transform: translateY(0);
+}
+
+.level-select__action-btn--primary {
+  border-color: rgba(0, 255, 136, 0.25);
+  color: var(--neon-green);
+  font-size: 20px;
+}
+
+.level-select__action-btn--primary:hover {
+  border-color: rgba(0, 255, 136, 0.5);
+  box-shadow: 0 0 24px rgba(0, 255, 136, 0.12);
+}
+
+.level-select--grid {
+  justify-content: flex-start;
+}
+
+.level-select__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 360px;
+}
+
+.level-select__header-back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(0, 229, 255, 0.15);
+  border-radius: 8px;
+  background: var(--bg-surface);
+  color: var(--neon-cyan);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.level-select__header-back:hover {
+  border-color: rgba(0, 229, 255, 0.4);
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.15);
+}
+
+.level-select__header-title {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  font-size: clamp(20px, 5vw, 28px);
+  color: var(--neon-cyan);
+  text-shadow: 0 0 12px rgba(0, 229, 255, 0.3);
+  letter-spacing: 2px;
+  text-transform: uppercase;
 }
 
 .level-card__number {

@@ -1,14 +1,14 @@
 import { useState } from 'react'
 
-interface SetupPanelProps {
+interface GridSizeSectionProps {
   rows: number
   cols: number
   onStart: (rows: number, cols: number) => void
 }
 
-const SIZES = [3, 4, 5, 6, 7]
+const SIZES = [4, 5, 6, 7, 8]
 
-export function SetupPanel({ rows: initRows, cols: initCols, onStart }: SetupPanelProps) {
+export function GridSizeSection({ rows: initRows, cols: initCols, onStart }: GridSizeSectionProps) {
   const [rows, setRows] = useState(initRows)
   const [cols, setCols] = useState(initCols)
 

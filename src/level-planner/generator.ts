@@ -92,7 +92,7 @@ function placeCheckpointsWithOffset(
   return checkpoints
 }
 
-function enumerateCandidateWalls(
+export function enumerateCandidateWalls(
   rows: number,
   cols: number,
   path: Cell[],

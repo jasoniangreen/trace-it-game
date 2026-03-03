@@ -1,24 +1,34 @@
-import { useState, useCallback, useEffect, lazy, Suspense } from 'react'
-import { LevelSelect } from './components/LevelSelect/LevelSelect'
+import { useState, useCallback, useEffect, useMemo, lazy, Suspense } from 'react'
+import { HomeScreen } from './components/LevelSelect/LevelSelect'
+import { LevelGrid } from './components/LevelSelect/LevelSelect'
 import { GameBoard } from './components/GameBoard/GameBoard'
 import { useProgress } from './hooks/useProgress'
 import { levels } from './data/levels'
+import { decodeLevel } from './level-planner/levelCodec'
 import type { Level } from './types'
 
-const LevelPlanner = import.meta.env.DEV
-  ? lazy(() => import('./level-planner/LevelPlanner'))
-  : null
+const LevelPlanner = lazy(() => import('./level-planner/LevelPlanner'))
+
+function getRoute(): string {
+  return window.location.hash || ''
+}
 
 export default function App() {
   const [currentLevel, setCurrentLevel] = useState<Level | null>(null)
-  const [showPlanner, setShowPlanner] = useState(
-    () => import.meta.env.DEV && window.location.hash === '#level-planner',
-  )
+  const [route, setRoute] = useState(getRoute)
   const { markComplete, isComplete } = useProgress()
 
+  const sharedLevel = useMemo(() => {
+    if (!route.startsWith('#play/')) return null
+    try { return decodeLevel(route.slice(6)) }
+    catch { return null }
+  }, [route])
+
   useEffect(() => {
-    if (!import.meta.env.DEV) return
-    const onHash = () => setShowPlanner(window.location.hash === '#level-planner')
+    const onHash = () => {
+      setRoute(getRoute())
+      setCurrentLevel(null)
+    }
     window.addEventListener('hashchange', onHash)
     return () => window.removeEventListener('hashchange', onHash)
   }, [])
@@ -29,6 +39,10 @@ export default function App() {
 
   const handleBack = useCallback(() => {
     setCurrentLevel(null)
+  }, [])
+
+  const goHome = useCallback(() => {
+    window.location.hash = ''
   }, [])
 
   const handleComplete = useCallback(
@@ -44,7 +58,20 @@ export default function App() {
     [markComplete],
   )
 
-  if (showPlanner && LevelPlanner) {
+  if (route.startsWith('#play/')) {
+    if (!sharedLevel) {
+      return (
+        <div style={{ textAlign: 'center', padding: '4rem 1rem' }}>
+          <h1>Invalid Level</h1>
+          <p style={{ margin: '1rem 0', color: '#888' }}>This share link is broken or expired.</p>
+          <a href="#" style={{ color: '#4caf50' }}>Back to Home</a>
+        </div>
+      )
+    }
+    return <GameBoard level={sharedLevel} onBack={goHome} onComplete={goHome} />
+  }
+
+  if (route === '#level-planner') {
     return (
       <Suspense fallback={<div className="planner-loading">Loading Level Planner...</div>}>
         <LevelPlanner />
@@ -52,15 +79,18 @@ export default function App() {
     )
   }
 
-  if (currentLevel) {
-    return (
-      <GameBoard
-        level={currentLevel}
-        onBack={handleBack}
-        onComplete={handleComplete}
-      />
-    )
+  if (route === '#levels') {
+    if (currentLevel) {
+      return (
+        <GameBoard
+          level={currentLevel}
+          onBack={handleBack}
+          onComplete={handleComplete}
+        />
+      )
+    }
+    return <LevelGrid onSelect={handleSelect} isComplete={isComplete} />
   }
 
-  return <LevelSelect onSelect={handleSelect} isComplete={isComplete} />
+  return <HomeScreen />
 }

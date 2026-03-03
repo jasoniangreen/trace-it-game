@@ -1,49 +1,60 @@
 import { useCallback, useRef } from 'react'
 import { getCandidateWallCount, generate } from './generator'
 import type { Cell } from '../types'
+import type { Action, EditMode } from './LevelPlanner'
 
-type Action =
-  | { type: 'SET_TARGETS'; targetWalls: number; targetCheckpoints: number }
-  | { type: 'START_GENERATE' }
-  | { type: 'GENERATE_PROGRESS'; progress: number }
-  | { type: 'GENERATE_DONE'; level: import('../types').Level }
-  | { type: 'GENERATE_FAIL'; error: string }
-  | { type: 'RESET' }
-
-interface ConfigPanelProps {
+interface ConfigSectionProps {
   rows: number
   cols: number
   path: Cell[]
   targetWalls: number
   targetCheckpoints: number
   isGenerating: boolean
-  progress: number
   error: string | null
+  disabled: boolean
+  hasGenerated: boolean
+  editMode: EditMode
+  copied: boolean
+  copiedLink: boolean
+  hasManualData: boolean
+  onCopy: () => void
+  onCopyShareLink: () => void
   dispatch: (action: Action) => void
 }
 
-export function ConfigPanel({
+export function ConfigSection({
   rows,
   cols,
   path,
   targetWalls,
   targetCheckpoints,
   isGenerating,
-  progress,
   error,
+  disabled,
+  hasGenerated,
+  editMode,
+  copied,
+  copiedLink,
+  hasManualData,
+  onCopy,
+  onCopyShareLink,
   dispatch,
-}: ConfigPanelProps) {
+}: ConfigSectionProps) {
   const totalCells = rows * cols
-  const maxCandidateWalls = getCandidateWallCount(rows, cols, path)
+  const maxCandidateWalls = disabled ? 0 : getCandidateWallCount(rows, cols, path)
   const maxCheckpoints = Math.max(2, Math.floor(totalCells / 3))
   const cancelRef = useRef(false)
 
-  const handleGenerate = useCallback(async () => {
+  const handleRandomise = useCallback(async () => {
     cancelRef.current = false
+    const w = Math.floor(Math.random() * (maxCandidateWalls + 1))
+    const c = 2 + Math.floor(Math.random() * (maxCheckpoints - 1))
+    dispatch({ type: 'SET_EDIT_MODE', mode: null })
+    dispatch({ type: 'SET_TARGETS', targetWalls: w, targetCheckpoints: c })
     dispatch({ type: 'START_GENERATE' })
 
     const result = await generate(
-      { rows, cols, path, targetWalls, targetCheckpoints },
+      { rows, cols, path, targetWalls: w, targetCheckpoints: c },
       (attempts, total) => {
         if (cancelRef.current) return
         dispatch({ type: 'GENERATE_PROGRESS', progress: Math.round((attempts / total) * 100) })
@@ -57,75 +68,69 @@ export function ConfigPanel({
     } else {
       dispatch({ type: 'GENERATE_FAIL', error: result.error ?? 'Generation failed' })
     }
-  }, [rows, cols, path, targetWalls, targetCheckpoints, dispatch])
+  }, [rows, cols, path, maxCandidateWalls, maxCheckpoints, dispatch])
 
   const handleCancel = useCallback(() => {
     cancelRef.current = true
     dispatch({ type: 'GENERATE_FAIL', error: 'Cancelled' })
   }, [dispatch])
 
+  const canCopy = !disabled && (hasGenerated || hasManualData)
+
   return (
-    <div className="planner-panel">
+    <div className={`planner-panel ${disabled ? 'planner-section--disabled' : ''}`}>
       <span className="planner-panel__label">Configure Level</span>
 
-      <div className="config-panel__slider-row">
-        <span className="config-panel__slider-label">Walls</span>
-        <input
-          className="config-panel__slider"
-          type="range"
-          min={0}
-          max={maxCandidateWalls}
-          value={targetWalls}
-          onChange={e => dispatch({
-            type: 'SET_TARGETS',
-            targetWalls: Number(e.target.value),
-            targetCheckpoints,
-          })}
-          disabled={isGenerating}
-        />
-        <span className="config-panel__slider-value">{targetWalls}</span>
-      </div>
+      {disabled && (
+        <span className="planner-section__hint">Complete the path to configure</span>
+      )}
 
-      <div className="config-panel__slider-row">
-        <span className="config-panel__slider-label">Checkpoints</span>
-        <input
-          className="config-panel__slider"
-          type="range"
-          min={2}
-          max={maxCheckpoints}
-          value={targetCheckpoints}
-          onChange={e => dispatch({
-            type: 'SET_TARGETS',
-            targetWalls,
-            targetCheckpoints: Number(e.target.value),
-          })}
-          disabled={isGenerating}
-        />
-        <span className="config-panel__slider-value">{targetCheckpoints}</span>
+      <div className="config-panel__toggle-row">
+        <button
+          className={`planner-btn planner-btn--small config-panel__toggle ${editMode === 'walls' ? 'config-panel__toggle--active' : ''}`}
+          onClick={() => dispatch({ type: 'SET_EDIT_MODE', mode: editMode === 'walls' ? null : 'walls' })}
+          disabled={disabled || isGenerating}
+        >
+          {editMode === 'walls' && <span className="config-panel__check">&#10003;</span>}
+          Edit Walls
+        </button>
+        <button
+          className={`planner-btn planner-btn--small config-panel__toggle ${editMode === 'numbers' ? 'config-panel__toggle--active' : ''}`}
+          onClick={() => dispatch({ type: 'SET_EDIT_MODE', mode: editMode === 'numbers' ? null : 'numbers' })}
+          disabled={disabled || isGenerating}
+        >
+          {editMode === 'numbers' && <span className="config-panel__check">&#10003;</span>}
+          Edit Numbers
+        </button>
       </div>
-
-      <span className="config-panel__info">
-        {maxCandidateWalls} candidate walls available
-      </span>
 
       {error && <span className="config-panel__error">{error}</span>}
 
       {isGenerating ? (
+        <button className="planner-btn planner-btn--small" onClick={handleCancel}>
+          Cancel
+        </button>
+      ) : (
+        <button
+          className="planner-btn"
+          onClick={handleRandomise}
+          disabled={disabled}
+        >
+          Randomise
+        </button>
+      )}
+
+      {canCopy && (
         <>
-          <span className="config-panel__progress">Searching... {progress}%</span>
-          <button className="planner-btn planner-btn--small" onClick={handleCancel}>
-            Cancel
+          {import.meta.env.DEV && (
+            <button className="planner-btn planner-btn--green" onClick={onCopy}>
+              {copied ? 'Copied!' : 'Copy Level Data'}
+            </button>
+          )}
+          <button className="planner-btn planner-btn--green" onClick={onCopyShareLink}>
+            {copiedLink ? 'Copied!' : 'Copy Share Link'}
           </button>
         </>
-      ) : (
-        <div className="path-editor__actions">
-          <button className="planner-btn planner-btn--small" onClick={() => dispatch({ type: 'RESET' })}>
-            Start Over
-          </button>
-          <button className="planner-btn planner-btn--green" onClick={handleGenerate}>
-            Generate
-          </button>
-        </div>
       )}
     </div>
   )
