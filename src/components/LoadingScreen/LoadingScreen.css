@@ -6,10 +6,10 @@
   justify-content: center;
   background: rgba(6, 6, 15, 0.97);
   z-index: 200;
-  animation: overlay-in 0.3s ease;
+  animation: loading-overlay-in 0.3s ease;
 }
 
-@keyframes overlay-in {
+@keyframes loading-overlay-in {
   from { opacity: 0; }
   to { opacity: 1; }
 }
