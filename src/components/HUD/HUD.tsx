@@ -6,7 +6,7 @@ interface HUDProps {
   levelName: string
   pathLength: number
   totalCells: number
-  elapsed?: number
+  elapsed: number
   onBack: () => void
   onReset: () => void
   onUndo: () => void
@@ -22,8 +22,10 @@ export function HUD({ levelName, pathLength, totalCells, elapsed, onBack, onRese
       </button>
       <div className="hud__info">
         <span className="hud__level-name">{levelName}</span>
-        <span className="hud__progress">{pathLength} / {totalCells}</span>
-        {elapsed !== undefined && <span className="hud__timer">{formatTime(elapsed)}</span>}
+        <div className="hud__meta">
+          <span className="hud__timer">{formatTime(elapsed)}</span>
+          <span className="hud__progress">{pathLength} / {totalCells}</span>
+        </div>
       </div>
       <div className="hud__actions">
         <button className="hud__btn" onClick={onUndo} aria-label="Undo">

@@ -34,6 +34,20 @@
   letter-spacing: 0.5px;
 }
 
+.hud__meta {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.hud__timer {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--neon-cyan);
+  letter-spacing: 1px;
+}
+
 .hud__actions {
   display: flex;
   gap: 8px;
