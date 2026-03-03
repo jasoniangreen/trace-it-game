@@ -40,7 +40,6 @@ export function GameBoard({ level, onBack, onComplete }: GameBoardProps) {
   useEffect(() => {
     if (isComplete && phase === 'playing') {
       if (intervalRef.current) clearInterval(intervalRef.current)
-      setElapsedMs(Date.now() - startTimeRef.current)
       setPhase('complete')
     }
   }, [isComplete, phase])

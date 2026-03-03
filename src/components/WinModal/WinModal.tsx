@@ -23,7 +23,7 @@ export function WinModal({ levelName, elapsed, hasNextLevel, onNextLevel, onBack
               Next Level
             </button>
           )}
-          <button className="win-modal__btn win-modal__btn--secondary" onClick={hasNextLevel ? onBack : onNextLevel}>
+          <button className="win-modal__btn win-modal__btn--secondary" onClick={onBack}>
             Level Select
           </button>
         </div>
