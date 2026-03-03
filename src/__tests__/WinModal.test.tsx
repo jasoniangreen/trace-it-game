@@ -18,7 +18,9 @@ describe('WinModal', () => {
 
   it('renders solve time prominently', () => {
     render(<WinModal {...baseProps} />)
-    expect(screen.getByText('01:23')).toBeInTheDocument()
+    const el = screen.getByText('01:23')
+    expect(el).toBeInTheDocument()
+    expect(el).toHaveClass('win-modal__time')
   })
 
   it('renders Next Level button when hasNextLevel', () => {
