@@ -31,7 +31,10 @@ export function GameBoard({ level, onBack, onComplete }: GameBoardProps) {
         setElapsedMs(Date.now() - startTimeRef.current)
       }, 100)
     }, 2000)
-    return () => clearTimeout(timeout)
+    return () => {
+      clearTimeout(timeout)
+      if (intervalRef.current) clearInterval(intervalRef.current)
+    }
   }, [])
 
   useEffect(() => {
@@ -41,12 +44,6 @@ export function GameBoard({ level, onBack, onComplete }: GameBoardProps) {
       setPhase('complete')
     }
   }, [isComplete, phase])
-
-  useEffect(() => {
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current)
-    }
-  }, [])
 
   const onCellEnter = useCallback(
     (row: number, col: number) => tryMove(row, col),

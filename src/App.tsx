@@ -68,7 +68,7 @@ export default function App() {
         </div>
       )
     }
-    return <GameBoard level={sharedLevel} onBack={goHome} onComplete={goHome} />
+    return <GameBoard key={sharedLevel.id} level={sharedLevel} onBack={goHome} onComplete={goHome} />
   }
 
   if (route === '#level-planner') {
@@ -83,6 +83,7 @@ export default function App() {
     if (currentLevel) {
       return (
         <GameBoard
+          key={currentLevel.id}
           level={currentLevel}
           onBack={handleBack}
           onComplete={handleComplete}
