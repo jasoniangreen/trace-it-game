@@ -1,15 +1,18 @@
 import './HUD.css'
 
+import { formatTime } from '../../utils/formatTime'
+
 interface HUDProps {
   levelName: string
   pathLength: number
   totalCells: number
+  elapsed?: number
   onBack: () => void
   onReset: () => void
   onUndo: () => void
 }
 
-export function HUD({ levelName, pathLength, totalCells, onBack, onReset, onUndo }: HUDProps) {
+export function HUD({ levelName, pathLength, totalCells, elapsed, onBack, onReset, onUndo }: HUDProps) {
   return (
     <div className="hud">
       <button className="hud__btn" onClick={onBack} aria-label="Back to levels">
@@ -20,6 +23,7 @@ export function HUD({ levelName, pathLength, totalCells, onBack, onReset, onUndo
       <div className="hud__info">
         <span className="hud__level-name">{levelName}</span>
         <span className="hud__progress">{pathLength} / {totalCells}</span>
+        {elapsed !== undefined && <span className="hud__timer">{formatTime(elapsed)}</span>}
       </div>
       <div className="hud__actions">
         <button className="hud__btn" onClick={onUndo} aria-label="Undo">
