@@ -1,6 +1,5 @@
-import './HUD.css'
-
 import { formatTime } from '../../utils/formatTime'
+import './HUD.css'
 
 interface HUDProps {
   levelName: string

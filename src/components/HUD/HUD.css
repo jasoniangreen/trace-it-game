@@ -45,6 +45,7 @@
   font-weight: 600;
   font-size: 13px;
   color: var(--neon-cyan);
+  text-shadow: 0 0 8px rgba(0, 229, 255, 0.3);
   letter-spacing: 1px;
 }
 
