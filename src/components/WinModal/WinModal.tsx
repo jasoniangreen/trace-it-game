@@ -2,6 +2,7 @@ import './WinModal.css'
 
 interface WinModalProps {
   levelName: string
+  elapsed?: number
   hasNextLevel: boolean
   onNextLevel: () => void
   onBack: () => void

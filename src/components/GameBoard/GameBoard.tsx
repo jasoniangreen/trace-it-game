@@ -93,6 +93,7 @@ export function GameBoard({ level, onBack, onComplete }: GameBoardProps) {
       {phase === 'complete' && (
         <WinModal
           levelName={level.name}
+          elapsed={elapsedMs}
           hasNextLevel={hasNextLevel}
           onNextLevel={handleNextLevel}
           onBack={handleBack}
