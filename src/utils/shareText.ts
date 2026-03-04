@@ -1,5 +1,3 @@
-import { formatTime } from './formatTime'
-
 const ON = '🟩'
 const OFF = '⬛'
 
@@ -84,8 +82,18 @@ const GLYPHS: Record<string, string[][]> = {
   ],
 }
 
+// Cap at 9:99 — times beyond that aren't supported in the share art
+const MAX_SHARE_SECS = 9 * 60 + 99
+
+function formatShareTime(ms: number): string {
+  const s = Math.min(Math.floor(ms / 1000), MAX_SHARE_SECS)
+  const m = Math.min(Math.floor(s / 60), 9)
+  const sec = m < 9 ? s % 60 : s - 9 * 60
+  return `${m}:${String(sec).padStart(2, '0')}`
+}
+
 export function buildShareText(elapsedMs: number, shareUrl: string): string {
-  const timeStr = formatTime(elapsedMs)
+  const timeStr = formatShareTime(elapsedMs)
   const chars = timeStr.split('')
 
   const artRows: string[] = []

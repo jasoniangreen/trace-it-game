@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { buildShareText } from '../utils/shareText'
 
-const ELAPSED = 83000 // 01:23
+const ELAPSED = 83000 // 1:23
 const URL = 'https://example.com/#play/abc123'
 
 describe('buildShareText', () => {
@@ -12,7 +12,7 @@ describe('buildShareText', () => {
 
   it('second line is formatted time', () => {
     const lines = buildShareText(ELAPSED, URL).split('\n')
-    expect(lines[1]).toBe('01:23')
+    expect(lines[1]).toBe('1:23')
   })
 
   it('ends with the share URL', () => {
