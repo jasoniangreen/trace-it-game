@@ -3,6 +3,7 @@ import { HomeScreen } from './components/LevelSelect/LevelSelect'
 import { LevelGrid } from './components/LevelSelect/LevelSelect'
 import { GameBoard } from './components/GameBoard/GameBoard'
 import { useProgress } from './hooks/useProgress'
+import { useSharedProgress } from './hooks/useSharedProgress'
 import { levels } from './data/levels'
 import { decodeLevel } from './level-planner/levelCodec'
 import type { Level } from './types'
@@ -17,6 +18,7 @@ export default function App() {
   const [currentLevel, setCurrentLevel] = useState<Level | null>(null)
   const [route, setRoute] = useState(getRoute)
   const { markComplete, isComplete } = useProgress()
+  const { getSharedTime, saveSharedCompletion } = useSharedProgress()
 
   const sharedLevel = useMemo(() => {
     if (!route.startsWith('#play/')) return null
@@ -68,7 +70,19 @@ export default function App() {
         </div>
       )
     }
-    return <GameBoard key={sharedLevel.id} level={sharedLevel} onBack={goHome} onComplete={goHome} />
+    const encoded = route.slice(6)
+    const storedMs = getSharedTime(encoded)
+    return (
+      <GameBoard
+        key={encoded}
+        level={sharedLevel}
+        onBack={goHome}
+        onComplete={goHome}
+        shareUrl={window.location.href}
+        initialElapsedMs={storedMs}
+        onSolve={(ms) => saveSharedCompletion(encoded, ms)}
+      />
+    )
   }
 
   if (route === '#level-planner') {

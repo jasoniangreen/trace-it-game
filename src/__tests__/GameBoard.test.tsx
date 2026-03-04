@@ -48,3 +48,47 @@ describe('GameBoard timer', () => {
     expect(screen.getByText('00:05')).toBeInTheDocument()
   })
 })
+
+describe('GameBoard with initialElapsedMs', () => {
+  it('shows WinModal immediately without GET READY screen', () => {
+    render(
+      <GameBoard
+        level={mockLevel}
+        onBack={() => {}}
+        onComplete={() => {}}
+        initialElapsedMs={83000}
+      />,
+    )
+    expect(screen.queryByText('GET READY')).not.toBeInTheDocument()
+    expect(screen.getByText('Complete')).toBeInTheDocument()
+  })
+
+  it('displays stored time in WinModal', () => {
+    render(
+      <GameBoard
+        level={mockLevel}
+        onBack={() => {}}
+        onComplete={() => {}}
+        initialElapsedMs={83000}
+      />,
+    )
+    // Both HUD and WinModal show 01:23 — check WinModal specifically
+    const times = screen.getAllByText('01:23')
+    expect(times.some((el) => el.classList.contains('win-modal__time'))).toBe(true)
+  })
+
+  it('timer does not advance after 5 seconds', () => {
+    render(
+      <GameBoard
+        level={mockLevel}
+        onBack={() => {}}
+        onComplete={() => {}}
+        initialElapsedMs={83000}
+      />,
+    )
+    act(() => { vi.advanceTimersByTime(5000) })
+    // Time should still be 01:23 in WinModal
+    const times = screen.getAllByText('01:23')
+    expect(times.some((el) => el.classList.contains('win-modal__time'))).toBe(true)
+  })
+})

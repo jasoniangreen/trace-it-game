@@ -135,6 +135,17 @@
   box-shadow: 0 0 12px rgba(0, 229, 255, 0.15);
 }
 
+.win-modal__btn--share {
+  background: rgba(0, 229, 255, 0.12);
+  color: var(--neon-cyan);
+  border: 1px solid rgba(0, 229, 255, 0.3);
+}
+
+.win-modal__btn--share:hover {
+  background: rgba(0, 229, 255, 0.2);
+  box-shadow: 0 0 16px rgba(0, 229, 255, 0.25);
+}
+
 .win-modal__btn:active {
   transform: scale(0.95);
 }

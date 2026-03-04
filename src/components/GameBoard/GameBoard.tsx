@@ -13,17 +13,23 @@ interface GameBoardProps {
   level: Level
   onBack: () => void
   onComplete: (levelId: string) => void
+  shareUrl?: string
+  initialElapsedMs?: number
+  onSolve?: (elapsedMs: number) => void
 }
 
-export function GameBoard({ level, onBack, onComplete }: GameBoardProps) {
+export function GameBoard({ level, onBack, onComplete, shareUrl, initialElapsedMs, onSolve }: GameBoardProps) {
   const { path, visited, head, isComplete, tryMove, undo, reset } = useGameState(level)
 
-  const [phase, setPhase] = useState<'loading' | 'playing' | 'complete'>('loading')
-  const [elapsedMs, setElapsedMs] = useState(0)
+  const [phase, setPhase] = useState<'loading' | 'playing' | 'complete'>(
+    initialElapsedMs !== undefined ? 'complete' : 'loading',
+  )
+  const [elapsedMs, setElapsedMs] = useState(initialElapsedMs ?? 0)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const startTimeRef = useRef<number>(0)
 
   useEffect(() => {
+    if (initialElapsedMs !== undefined) return
     const timeout = setTimeout(() => {
       setPhase('playing')
       startTimeRef.current = Date.now()
@@ -35,14 +41,15 @@ export function GameBoard({ level, onBack, onComplete }: GameBoardProps) {
       clearTimeout(timeout)
       if (intervalRef.current) clearInterval(intervalRef.current)
     }
-  }, [])
+  }, [initialElapsedMs])
 
   useEffect(() => {
     if (isComplete && phase === 'playing') {
       if (intervalRef.current) clearInterval(intervalRef.current)
+      onSolve?.(elapsedMs)
       setPhase('complete')
     }
-  }, [isComplete, phase])
+  }, [isComplete, phase, elapsedMs, onSolve])
 
   const onCellEnter = useCallback(
     (row: number, col: number) => tryMove(row, col),
@@ -93,6 +100,7 @@ export function GameBoard({ level, onBack, onComplete }: GameBoardProps) {
           hasNextLevel={hasNextLevel}
           onNextLevel={handleNextLevel}
           onBack={handleBack}
+          shareUrl={shareUrl}
         />
       )}
     </div>
