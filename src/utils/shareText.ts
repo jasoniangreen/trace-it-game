@@ -1,7 +1,7 @@
 const ON = '🟩'
 const OFF = '⬛'
 
-// 5-row × 3-col bitmaps for each digit and colon
+// 5-row × 3-col bitmaps for each digit
 const GLYPHS: Record<string, string[][]> = {
   '0': [
     [ON, ON, ON],
@@ -73,43 +73,26 @@ const GLYPHS: Record<string, string[][]> = {
     [OFF, OFF, ON],
     [ON, ON, ON],
   ],
-  ':': [
-    [OFF, OFF, OFF],
-    [OFF, ON, OFF],
-    [OFF, OFF, OFF],
-    [OFF, ON, OFF],
-    [OFF, OFF, OFF],
-  ],
 }
 
-// Cap at 9:99 — times beyond that aren't supported in the share art
-const MAX_SHARE_SECS = 9 * 60 + 99
-
-function formatShareTime(ms: number): string {
-  const s = Math.min(Math.floor(ms / 1000), MAX_SHARE_SECS)
-  const m = Math.min(Math.floor(s / 60), 9)
-  const sec = m < 9 ? s % 60 : s - 9 * 60
-  return `${m}:${String(sec).padStart(2, '0')}`
-}
+// Cap at 999 seconds — 3 digits max for the share art
+const MAX_SHARE_SECS = 999
 
 export function buildShareText(elapsedMs: number, shareUrl: string): string {
-  const timeStr = formatShareTime(elapsedMs)
-  const chars = timeStr.split('')
+  const secs = Math.min(Math.floor(elapsedMs / 1000), MAX_SHARE_SECS)
+  const chars = String(secs).split('')
 
   const artRows: string[] = []
   for (let r = 0; r < 5; r++) {
-    const rowParts = chars.map((ch) => {
-      const glyph = GLYPHS[ch]
-      return glyph[r].join('')
-    })
+    const rowParts = chars.map((ch) => GLYPHS[ch][r].join(''))
     artRows.push(rowParts.join(' '))
   }
 
   return [
     'Trace It ⚡',
-    timeStr,
     '',
     ...artRows,
+    'seconds',
     '',
     'Can you beat it?',
     shareUrl,
