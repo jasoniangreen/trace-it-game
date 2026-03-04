@@ -22,7 +22,11 @@ export function useSharedProgress() {
   function saveSharedCompletion(encoded: string, elapsedMs: number): void {
     const store = readStore()
     store[encoded] = elapsedMs
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(store))
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(store))
+    } catch {
+      // storage full or unavailable — ignore
+    }
   }
 
   return { getSharedTime, saveSharedCompletion }

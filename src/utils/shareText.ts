@@ -79,7 +79,7 @@ const GLYPHS: Record<string, string[][]> = {
 const MAX_SHARE_SECS = 999
 
 export function buildShareText(elapsedMs: number, shareUrl: string): string {
-  const secs = Math.min(Math.floor(elapsedMs / 1000), MAX_SHARE_SECS)
+  const secs = Math.max(0, Math.min(Math.floor(elapsedMs / 1000), MAX_SHARE_SECS))
   const chars = String(secs).split('')
 
   const artRows: string[] = []

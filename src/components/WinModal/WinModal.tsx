@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { formatTime } from '../../utils/formatTime'
 import { buildShareText } from '../../utils/shareText'
 import './WinModal.css'
@@ -14,13 +14,19 @@ interface WinModalProps {
 
 export function WinModal({ levelName, elapsed, hasNextLevel, onNextLevel, onBack, shareUrl }: WinModalProps) {
   const [copied, setCopied] = useState(false)
+  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => () => {
+    if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current)
+  }, [])
 
   const handleShare = useCallback(async () => {
     if (!shareUrl) return
     try {
       await navigator.clipboard.writeText(buildShareText(elapsed, shareUrl))
       setCopied(true)
-      setTimeout(() => setCopied(false), 1500)
+      if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current)
+      copyTimeoutRef.current = setTimeout(() => setCopied(false), 1500)
     } catch {
       // clipboard unavailable — silent failure
     }
