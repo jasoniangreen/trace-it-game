@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import { Grid } from '../components/Grid/Grid'
 import { useDragInput } from '../hooks/useDragInput'
+import { useDynamicCellSize } from '../hooks/useDynamicCellSize'
 import { useEditorPath } from './useEditorPath'
 import { buildVisitedSet, cellKey } from '../logic/pathUtils'
 import { enumerateCandidateWalls } from './generator'
@@ -159,6 +160,7 @@ export function GridSection({
   )
 
   const { gridProps } = useDragInput({ onCellEnter })
+  const cellSize = useDynamicCellSize(cols, rows)
 
   const emptyLevel: Level = useMemo(() => ({
     id: 'editor',
@@ -196,7 +198,7 @@ export function GridSection({
         </div>
       )}
 
-      <div className="grid-section__grid-wrapper">
+      <div className="grid-section__grid-wrapper" style={{ '--cell-size': `${cellSize}px` } as React.CSSProperties}>
         <div {...(dragDisabled ? {} : gridProps)}>
           <Grid
             level={displayLevel}

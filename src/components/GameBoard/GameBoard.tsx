@@ -5,6 +5,7 @@ import { WinModal } from '../WinModal/WinModal'
 import { LoadingScreen } from '../LoadingScreen/LoadingScreen'
 import { useGameState } from '../../hooks/useGameState'
 import { useDragInput } from '../../hooks/useDragInput'
+import { useDynamicCellSize } from '../../hooks/useDynamicCellSize'
 import { levels } from '../../data/levels'
 import type { Level } from '../../types'
 import './GameBoard.css'
@@ -57,6 +58,7 @@ export function GameBoard({ level, onBack, onComplete, shareUrl, initialElapsedM
   )
 
   const { gridProps } = useDragInput({ onCellEnter })
+  const cellSize = useDynamicCellSize(level.cols, level.rows)
 
   const levelIdx = levels.findIndex((l) => l.id === level.id)
   const hasNextLevel = levelIdx < levels.length - 1
@@ -84,7 +86,7 @@ export function GameBoard({ level, onBack, onComplete, shareUrl, initialElapsedM
         onReset={reset}
         onUndo={undo}
       />
-      <div className="game-board__grid" {...gridProps}>
+      <div className="game-board__grid" style={{ '--cell-size': `${cellSize}px` } as React.CSSProperties} {...gridProps}>
         <Grid
           level={level}
           path={path}

@@ -91,6 +91,7 @@ export function buildShareText(elapsedMs: number, shareUrl: string): string {
   return [
     'Trace It ⚡',
     '',
+    'I beat this level in',
     ...artRows,
     'seconds',
     '',

@@ -27,14 +27,14 @@ describe('buildShareText', () => {
 
   it('produces exactly 5 emoji art rows', () => {
     const lines = buildShareText(ELAPSED, URL).split('\n')
-    // Format: header, blank, 5 art rows, seconds, blank, tagline, url
-    const artRows = lines.slice(2, 7)
+    // Format: header, blank, intro, 5 art rows, seconds, blank, tagline, url
+    const artRows = lines.slice(3, 8)
     expect(artRows).toHaveLength(5)
   })
 
   it('each art row contains only 🟩, ⬛, and spaces', () => {
     const lines = buildShareText(ELAPSED, URL).split('\n')
-    const artRows = lines.slice(2, 7)
+    const artRows = lines.slice(3, 8)
     for (const row of artRows) {
       const stripped = row.replace(/🟩|⬛| /g, '')
       expect(stripped).toBe('')
@@ -44,7 +44,7 @@ describe('buildShareText', () => {
   it('caps at 999 seconds', () => {
     const lines = buildShareText(1000 * 1000, URL).split('\n')
     // 3 digit glyphs — each row has 3 glyphs separated by spaces
-    const artRows = lines.slice(2, 7)
+    const artRows = lines.slice(3, 8)
     expect(artRows).toHaveLength(5)
     // Three glyph groups separated by two spaces means two ' ' separators
     expect(artRows[0].split(' ').length).toBe(3)
