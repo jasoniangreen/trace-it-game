@@ -58,6 +58,21 @@ describe('WinModal', () => {
     expect(screen.getByText('Share')).toBeInTheDocument()
   })
 
+  describe('shared play mode (shareUrl present)', () => {
+    const shareUrl = 'https://example.com/#play/abc'
+
+    it('shows "Build a level" instead of "Next Level"', () => {
+      render(<WinModal {...baseProps} shareUrl={shareUrl} />)
+      expect(screen.getByText('Build a level')).toBeInTheDocument()
+      expect(screen.queryByText('Next Level')).not.toBeInTheDocument()
+    })
+
+    it('does not show Level Select', () => {
+      render(<WinModal {...baseProps} shareUrl={shareUrl} />)
+      expect(screen.queryByText('Level Select')).not.toBeInTheDocument()
+    })
+  })
+
   describe('Share button behavior', () => {
     const shareUrl = 'https://example.com/#play/abc'
 

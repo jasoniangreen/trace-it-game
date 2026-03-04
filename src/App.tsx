@@ -77,7 +77,7 @@ export default function App() {
         key={encoded}
         level={sharedLevel}
         onBack={goHome}
-        onComplete={goHome}
+        onComplete={() => { window.location.hash = '#level-planner' }}
         shareUrl={window.location.href}
         initialElapsedMs={storedMs}
         onSolve={(ms) => saveSharedCompletion(encoded, ms)}
