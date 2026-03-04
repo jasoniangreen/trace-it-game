@@ -73,13 +73,12 @@ describe('WinModal', () => {
     })
   })
 
-  describe('Share button behavior', () => {
+  describe('Share button behavior (clipboard fallback)', () => {
     const shareUrl = 'https://example.com/#play/abc'
 
     it('click copies expected text to clipboard', async () => {
       const user = userEvent.setup()
       render(<WinModal {...baseProps} shareUrl={shareUrl} />)
-      // Spy after render — render activates jsdom's real Clipboard object
       const writeText = spyClipboard()
       await user.click(screen.getByText('Share'))
       expect(writeText).toHaveBeenCalledOnce()
@@ -115,6 +114,35 @@ describe('WinModal', () => {
       spyClipboard(new Error('denied'))
       await expect(user.click(screen.getByText('Share'))).resolves.not.toThrow()
       expect(screen.queryByText('Copied!')).not.toBeInTheDocument()
+    })
+  })
+
+  describe('Share button behavior (native share)', () => {
+    const shareUrl = 'https://example.com/#play/abc'
+
+    afterEach(() => {
+      // @ts-expect-error — removing mock
+      delete navigator.share
+    })
+
+    it('uses navigator.share when available', async () => {
+      const shareSpy = vi.fn().mockResolvedValue(undefined)
+      Object.defineProperty(navigator, 'share', { value: shareSpy, configurable: true })
+      const user = userEvent.setup()
+      render(<WinModal {...baseProps} shareUrl={shareUrl} />)
+      await user.click(screen.getByText('Share'))
+      expect(shareSpy).toHaveBeenCalledOnce()
+      expect(shareSpy.mock.calls[0][0].text).toContain('Trace It ⚡')
+      // Should not show "Copied!" — native share has its own confirmation
+      expect(screen.queryByText('Copied!')).not.toBeInTheDocument()
+    })
+
+    it('silently handles user cancelling share sheet', async () => {
+      const shareSpy = vi.fn().mockRejectedValue(new DOMException('cancelled', 'AbortError'))
+      Object.defineProperty(navigator, 'share', { value: shareSpy, configurable: true })
+      const user = userEvent.setup()
+      render(<WinModal {...baseProps} shareUrl={shareUrl} />)
+      await expect(user.click(screen.getByText('Share'))).resolves.not.toThrow()
     })
   })
 })

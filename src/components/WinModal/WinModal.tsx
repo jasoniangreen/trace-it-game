@@ -22,13 +22,18 @@ export function WinModal({ levelName, elapsed, hasNextLevel, onNextLevel, onBack
 
   const handleShare = useCallback(async () => {
     if (!shareUrl) return
+    const text = buildShareText(elapsed, shareUrl)
     try {
-      await navigator.clipboard.writeText(buildShareText(elapsed, shareUrl))
-      setCopied(true)
-      if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current)
-      copyTimeoutRef.current = setTimeout(() => setCopied(false), 1500)
+      if (navigator.share && 'ontouchstart' in window) {
+        await navigator.share({ text })
+      } else {
+        await navigator.clipboard.writeText(text)
+        setCopied(true)
+        if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current)
+        copyTimeoutRef.current = setTimeout(() => setCopied(false), 1500)
+      }
     } catch {
-      // clipboard unavailable — silent failure
+      // user cancelled share sheet or clipboard unavailable
     }
   }, [elapsed, shareUrl])
 
