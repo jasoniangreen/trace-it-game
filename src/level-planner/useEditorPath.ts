@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { isAdjacent } from '../logic/validation'
-import { cellKey, addToPath, truncatePath, undoPath } from '../logic/pathUtils'
+import { cellKey, addToPath, undoPath } from '../logic/pathUtils'
 import type { Cell } from '../types'
 
 interface UseEditorPathOptions {
@@ -26,11 +26,17 @@ export function useEditorPath({ rows, cols, path, onPathChange }: UseEditorPathO
       return
     }
 
-    // If clicking on a visited cell, truncate back to it
-    if (visited.has(key)) {
-      onPathChange(truncatePath(path, cell))
-      return
+    // Retrace: only undo one step by moving back to the previous cell
+    if (path.length >= 2) {
+      const prev = path[path.length - 2]
+      if (prev[0] === row && prev[1] === col) {
+        onPathChange(path.slice(0, -1))
+        return
+      }
     }
+
+    // Ignore moves to any other visited cell
+    if (visited.has(key)) return
 
     // Must be adjacent to head (no wall checking in editor)
     if (head && isAdjacent(head, cell)) {

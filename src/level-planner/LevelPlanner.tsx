@@ -209,9 +209,15 @@ export default function LevelPlanner() {
     }
     const encoded = encodeLevel(level)
     const url = `${window.location.origin}${window.location.pathname}#play/${encoded}`
-    await navigator.clipboard.writeText(url)
-    setCopiedLink(true)
-    setTimeout(() => setCopiedLink(false), 2000)
+    try {
+      if (navigator.share && 'ontouchstart' in window) {
+        await navigator.share({ text: url })
+      } else {
+        await navigator.clipboard.writeText(url)
+        setCopiedLink(true)
+        setTimeout(() => setCopiedLink(false), 2000)
+      }
+    } catch { /* user cancelled share */ }
   }, [state.generatedLevel, state.manualWalls, manualNumbers, state.path, state.rows, state.cols, pathComplete])
 
   const handlePlayLevel = useCallback(() => {
