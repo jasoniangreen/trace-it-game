@@ -47,7 +47,7 @@ export function WinModal({ levelName, elapsed, hasNextLevel, onNextLevel, onBack
         <div className="win-modal__actions">
           {shareUrl && (
             <button className="win-modal__btn win-modal__btn--share" onClick={handleShare}>
-              {copied ? 'Copied!' : 'Share'}
+              {copied ? 'Copied!' : 'Share Result'}
             </button>
           )}
           {shareUrl ? (
@@ -66,6 +66,9 @@ export function WinModal({ levelName, elapsed, hasNextLevel, onNextLevel, onBack
               Level Select
             </button>
           )}
+          <button className="win-modal__btn win-modal__btn--secondary" onClick={() => { window.location.hash = '' }}>
+            Home
+          </button>
         </div>
       </div>
     </div>
