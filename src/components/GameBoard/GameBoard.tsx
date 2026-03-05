@@ -10,6 +10,16 @@ import { levels } from '../../data/levels'
 import type { Level } from '../../types'
 import './GameBoard.css'
 
+const RULES_SEEN_KEY = 'trace-it-rules-seen'
+
+function hasSeenRules(): boolean {
+  try { return localStorage.getItem(RULES_SEEN_KEY) === '1' } catch { return false }
+}
+
+function markRulesSeen(): void {
+  try { localStorage.setItem(RULES_SEEN_KEY, '1') } catch { /* noop */ }
+}
+
 interface GameBoardProps {
   level: Level
   onBack: () => void
@@ -22,27 +32,28 @@ interface GameBoardProps {
 export function GameBoard({ level, onBack, onComplete, shareUrl, initialElapsedMs, onSolve }: GameBoardProps) {
   const { path, visited, head, isComplete, tryMove, undo, reset } = useGameState(level)
 
-  const [phase, setPhase] = useState<'loading' | 'playing' | 'complete'>(
-    initialElapsedMs !== undefined ? 'complete' : 'loading',
+  const isSharedPlay = !!shareUrl
+  const skipReady = initialElapsedMs !== undefined
+  const showRulesOnMount = skipReady ? false : isSharedPlay ? true : !hasSeenRules()
+
+  const [phase, setPhase] = useState<'ready' | 'playing' | 'complete'>(
+    skipReady ? 'complete' : showRulesOnMount ? 'ready' : 'playing',
   )
   const [elapsedMs, setElapsedMs] = useState(initialElapsedMs ?? 0)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const startTimeRef = useRef<number>(0)
 
   useEffect(() => {
-    if (initialElapsedMs !== undefined) return
-    const timeout = setTimeout(() => {
-      setPhase('playing')
-      startTimeRef.current = Date.now()
-      intervalRef.current = setInterval(() => {
-        setElapsedMs(Date.now() - startTimeRef.current)
-      }, 100)
-    }, 2000)
+    if (phase !== 'playing') return
+    if (startTimeRef.current !== 0) return
+    startTimeRef.current = Date.now()
+    intervalRef.current = setInterval(() => {
+      setElapsedMs(Date.now() - startTimeRef.current)
+    }, 100)
     return () => {
-      clearTimeout(timeout)
       if (intervalRef.current) clearInterval(intervalRef.current)
     }
-  }, [initialElapsedMs])
+  }, [phase])
 
   useEffect(() => {
     if (isComplete && phase === 'playing') {
@@ -51,6 +62,11 @@ export function GameBoard({ level, onBack, onComplete, shareUrl, initialElapsedM
       setPhase('complete')
     }
   }, [isComplete, phase, elapsedMs, onSolve])
+
+  const handleReady = useCallback(() => {
+    if (!isSharedPlay) markRulesSeen()
+    setPhase('playing')
+  }, [isSharedPlay])
 
   const onCellEnter = useCallback(
     (row: number, col: number) => tryMove(row, col),
@@ -71,8 +87,8 @@ export function GameBoard({ level, onBack, onComplete, shareUrl, initialElapsedM
     onBack()
   }, [onBack])
 
-  if (phase === 'loading') {
-    return <LoadingScreen />
+  if (phase === 'ready') {
+    return <LoadingScreen onReady={handleReady} />
   }
 
   return (

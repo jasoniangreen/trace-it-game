@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render, screen, act } from '@testing-library/react'
+import { render, screen, act, fireEvent } from '@testing-library/react'
 import { GameBoard } from '../components/GameBoard/GameBoard'
 import type { Level } from '../types'
 
@@ -15,36 +15,45 @@ const mockLevel: Level = {
 
 beforeEach(() => {
   vi.useFakeTimers()
+  localStorage.clear()
 })
 
 afterEach(() => {
   vi.useRealTimers()
 })
 
-describe('GameBoard loading phase', () => {
-  it('shows loading screen initially', () => {
+describe('GameBoard get-ready phase', () => {
+  it('shows get-ready screen on first visit', () => {
     render(<GameBoard level={mockLevel} onBack={() => {}} onComplete={() => {}} />)
     expect(screen.getByText('GET READY')).toBeInTheDocument()
   })
 
-  it('hides loading screen after 2 seconds', () => {
+  it('transitions to playing when I\'m Ready is clicked', () => {
     render(<GameBoard level={mockLevel} onBack={() => {}} onComplete={() => {}} />)
-    act(() => { vi.advanceTimersByTime(2000) })
+    fireEvent.click(screen.getByRole('button', { name: /ready/i }))
     expect(screen.queryByText('GET READY')).not.toBeInTheDocument()
+    expect(screen.getByText('00:00')).toBeInTheDocument()
+  })
+
+  it('skips get-ready on subsequent example levels after rules seen', () => {
+    localStorage.setItem('trace-it-rules-seen', '1')
+    render(<GameBoard level={mockLevel} onBack={() => {}} onComplete={() => {}} />)
+    expect(screen.queryByText('GET READY')).not.toBeInTheDocument()
+  })
+
+  it('always shows get-ready for shared play levels', () => {
+    localStorage.setItem('trace-it-rules-seen', '1')
+    render(<GameBoard level={mockLevel} onBack={() => {}} onComplete={() => {}} shareUrl="https://example.com" />)
+    expect(screen.getByText('GET READY')).toBeInTheDocument()
   })
 })
 
 describe('GameBoard timer', () => {
-  it('shows 00:00 in HUD after loading ends', () => {
+  it('timer starts after clicking ready', () => {
     render(<GameBoard level={mockLevel} onBack={() => {}} onComplete={() => {}} />)
-    act(() => { vi.advanceTimersByTime(2000) })
+    fireEvent.click(screen.getByRole('button', { name: /ready/i }))
     expect(screen.getByText('00:00')).toBeInTheDocument()
-  })
-
-  it('timer ticks while playing', () => {
-    render(<GameBoard level={mockLevel} onBack={() => {}} onComplete={() => {}} />)
-    act(() => { vi.advanceTimersByTime(2000) })   // end loading
-    act(() => { vi.advanceTimersByTime(5000) })   // advance 5s
+    act(() => { vi.advanceTimersByTime(5000) })
     expect(screen.getByText('00:05')).toBeInTheDocument()
   })
 })
@@ -72,7 +81,6 @@ describe('GameBoard with initialElapsedMs', () => {
         initialElapsedMs={83000}
       />,
     )
-    // Both HUD and WinModal show 01:23 — check WinModal specifically
     const times = screen.getAllByText('01:23')
     expect(times.some((el) => el.classList.contains('win-modal__time'))).toBe(true)
   })
@@ -87,7 +95,6 @@ describe('GameBoard with initialElapsedMs', () => {
       />,
     )
     act(() => { vi.advanceTimersByTime(5000) })
-    // Time should still be 01:23 in WinModal
     const times = screen.getAllByText('01:23')
     expect(times.some((el) => el.classList.contains('win-modal__time'))).toBe(true)
   })

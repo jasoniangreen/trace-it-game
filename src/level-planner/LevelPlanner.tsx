@@ -70,7 +70,7 @@ function init(): State {
   }
 }
 
-function reducer(state: State, action: Action): State {
+export function reducer(state: State, action: Action): State {
   switch (action.type) {
     case 'START_DRAWING':
       return { ...init(), started: true, rows: action.rows, cols: action.cols }
@@ -98,8 +98,16 @@ function reducer(state: State, action: Action): State {
       if (action.mode === state.editMode) {
         return { ...state, editMode: null }
       }
-      let next = { ...state, editMode: action.mode, generatedLevel: null }
-      if (action.mode === 'numbers' && state.checkpointCells.size === 0 && state.path.length >= 2) {
+
+      // Seed manual state from generated level so user can fine-tune it
+      const manualWalls = state.generatedLevel ? state.generatedLevel.walls : state.manualWalls
+      const checkpointCells = state.generatedLevel
+        ? new Set(Object.keys(state.generatedLevel.numbers))
+        : state.checkpointCells
+
+      let next = { ...state, editMode: action.mode, generatedLevel: null, manualWalls, checkpointCells }
+
+      if (action.mode === 'numbers' && checkpointCells.size === 0 && state.path.length >= 2) {
         const cells = new Set<string>()
         cells.add(cellKey(state.path[0]))
         cells.add(cellKey(state.path[state.path.length - 1]))
