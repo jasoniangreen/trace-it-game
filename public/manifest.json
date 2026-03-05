@@ -1,7 +1,7 @@
 {
   "name": "Trace It",
   "short_name": "Trace It",
-  "description": "Draw the path — a neon puzzle game",
+  "description": "Share the path — a neon puzzle game",
   "id": "/trace-it-game/",
   "start_url": "/trace-it-game/",
   "scope": "/trace-it-game/",

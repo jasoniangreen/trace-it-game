@@ -6,7 +6,7 @@ export function HomeScreen() {
   return (
     <div className="level-select">
       <h1 className="level-select__title">Trace It</h1>
-      <p className="level-select__subtitle">Draw the path</p>
+      <p className="level-select__subtitle">Share the path</p>
       <div className="level-select__actions">
         <button
           className="level-select__action-btn level-select__action-btn--primary"
