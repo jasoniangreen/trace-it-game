@@ -20,7 +20,6 @@ interface GridSectionProps {
   manualNumbers: Record<string, number>
   checkpointCells: Set<string>
   onPathChange: (path: Cell[]) => void
-  onEditPath: () => void
   dispatch: (action: Action) => void
 }
 
@@ -141,7 +140,6 @@ export function GridSection({
   manualNumbers,
   checkpointCells,
   onPathChange,
-  onEditPath,
   dispatch,
 }: GridSectionProps) {
   const totalCells = rows * cols
@@ -226,13 +224,6 @@ export function GridSection({
         )}
       </div>
 
-      {hasGenerated && (
-        <div className="path-editor__actions">
-          <button className="planner-btn planner-btn--small" onClick={onEditPath}>
-            Edit Path
-          </button>
-        </div>
-      )}
     </div>
   )
 }

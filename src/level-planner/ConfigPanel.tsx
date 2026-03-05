@@ -19,6 +19,7 @@ interface ConfigSectionProps {
   hasManualData: boolean
   onCopy: () => void
   onCopyShareLink: () => void
+  onPlayLevel: () => void
   dispatch: (action: Action) => void
 }
 
@@ -38,6 +39,7 @@ export function ConfigSection({
   hasManualData,
   onCopy,
   onCopyShareLink,
+  onPlayLevel,
   dispatch,
 }: ConfigSectionProps) {
   const totalCells = rows * cols
@@ -78,59 +80,63 @@ export function ConfigSection({
   const canCopy = !disabled && (hasGenerated || hasManualData)
 
   return (
-    <div className={`planner-panel ${disabled ? 'planner-section--disabled' : ''}`}>
-      <span className="planner-panel__label">Configure Level</span>
-
-      {disabled && (
-        <span className="planner-section__hint">Complete the path to configure</span>
-      )}
-
+    <div className="planner-panel">
       <div className="config-panel__toggle-row">
         <button
-          className={`planner-btn planner-btn--small config-panel__toggle ${editMode === 'walls' ? 'config-panel__toggle--active' : ''}`}
-          onClick={() => dispatch({ type: 'SET_EDIT_MODE', mode: editMode === 'walls' ? null : 'walls' })}
-          disabled={disabled || isGenerating}
+          className={`planner-btn planner-btn--small config-panel__toggle ${disabled ? 'planner-btn--dim' : ''} ${editMode === 'walls' ? 'config-panel__toggle--active' : ''}`}
+          onClick={() => {
+            if (disabled) { alert('Draw the path first'); return }
+            dispatch({ type: 'SET_EDIT_MODE', mode: editMode === 'walls' ? null : 'walls' })
+          }}
+          disabled={isGenerating}
         >
           {editMode === 'walls' && <span className="config-panel__check">&#10003;</span>}
           Edit Walls
         </button>
         <button
-          className={`planner-btn planner-btn--small config-panel__toggle ${editMode === 'numbers' ? 'config-panel__toggle--active' : ''}`}
-          onClick={() => dispatch({ type: 'SET_EDIT_MODE', mode: editMode === 'numbers' ? null : 'numbers' })}
-          disabled={disabled || isGenerating}
+          className={`planner-btn planner-btn--small config-panel__toggle ${disabled ? 'planner-btn--dim' : ''} ${editMode === 'numbers' ? 'config-panel__toggle--active' : ''}`}
+          onClick={() => {
+            if (disabled) { alert('Draw the path first'); return }
+            dispatch({ type: 'SET_EDIT_MODE', mode: editMode === 'numbers' ? null : 'numbers' })
+          }}
+          disabled={isGenerating}
         >
           {editMode === 'numbers' && <span className="config-panel__check">&#10003;</span>}
           Edit Numbers
         </button>
+        {isGenerating ? (
+          <button className="planner-btn planner-btn--small" onClick={handleCancel}>
+            Cancel
+          </button>
+        ) : (
+          <button
+            className={`planner-btn planner-btn--small ${disabled ? 'planner-btn--dim' : ''}`}
+            onClick={() => {
+              if (disabled) { alert('Draw the path first'); return }
+              handleRandomise()
+            }}
+          >
+            Random
+          </button>
+        )}
       </div>
 
       {error && <span className="config-panel__error">{error}</span>}
 
-      {isGenerating ? (
-        <button className="planner-btn planner-btn--small" onClick={handleCancel}>
-          Cancel
-        </button>
-      ) : (
-        <button
-          className="planner-btn"
-          onClick={handleRandomise}
-          disabled={disabled}
-        >
-          Randomise
-        </button>
-      )}
-
       {canCopy && (
-        <>
+        <div className="config-panel__toggle-row">
           {import.meta.env.DEV && (
-            <button className="planner-btn planner-btn--green" onClick={onCopy}>
-              {copied ? 'Copied!' : 'Copy Level Data'}
+            <button className="planner-btn planner-btn--small planner-btn--green" onClick={onCopy}>
+              {copied ? 'Copied!' : 'Copy Data'}
             </button>
           )}
-          <button className="planner-btn planner-btn--green" onClick={onCopyShareLink}>
-            {copiedLink ? 'Copied!' : 'Copy Share Link'}
+          <button className="planner-btn planner-btn--small planner-btn--green" onClick={onCopyShareLink}>
+            {copiedLink ? 'Copied!' : 'Share Link'}
           </button>
-        </>
+          <button className="planner-btn planner-btn--small planner-btn--green" onClick={onPlayLevel}>
+            Play Level
+          </button>
+        </div>
       )}
     </div>
   )

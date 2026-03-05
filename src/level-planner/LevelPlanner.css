@@ -155,6 +155,10 @@
   cursor: not-allowed;
 }
 
+.planner-btn--dim {
+  opacity: 0.3;
+}
+
 .planner-btn--green {
   border-color: rgba(0, 255, 136, 0.3);
   background: rgba(0, 255, 136, 0.06);

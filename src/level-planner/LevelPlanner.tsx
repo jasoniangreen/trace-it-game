@@ -160,11 +160,6 @@ export default function LevelPlanner() {
     window.location.hash = ''
   }, [])
 
-  const handleEditPath = useCallback(() => {
-    if (!window.confirm('This will discard the generated level. Continue?')) return
-    dispatch({ type: 'CLEAR_GENERATED' })
-  }, [])
-
   const handleStartOver = useCallback(() => {
     if (state.path.length > 0) {
       if (!window.confirm('This will reset everything. Continue?')) return
@@ -219,6 +214,27 @@ export default function LevelPlanner() {
     setTimeout(() => setCopiedLink(false), 2000)
   }, [state.generatedLevel, state.manualWalls, manualNumbers, state.path, state.rows, state.cols, pathComplete])
 
+  const handlePlayLevel = useCallback(() => {
+    let level: Level
+    if (state.generatedLevel) {
+      level = state.generatedLevel
+    } else if (pathComplete) {
+      level = {
+        id: `level-${Date.now()}`,
+        name: 'Unnamed',
+        cols: state.cols,
+        rows: state.rows,
+        numbers: manualNumbers,
+        walls: state.manualWalls,
+        solution: state.path,
+      }
+    } else {
+      return
+    }
+    const encoded = encodeLevel(level)
+    window.location.hash = `#play/${encoded}`
+  }, [state.generatedLevel, state.manualWalls, manualNumbers, state.path, state.rows, state.cols, pathComplete])
+
   if (!state.started) {
     return (
       <div className="planner">
@@ -270,7 +286,6 @@ export default function LevelPlanner() {
         manualNumbers={manualNumbers}
         checkpointCells={state.checkpointCells}
         onPathChange={(path) => dispatch({ type: 'SET_PATH', path })}
-        onEditPath={handleEditPath}
         dispatch={dispatch}
       />
 
@@ -290,6 +305,7 @@ export default function LevelPlanner() {
         hasManualData={hasManualData}
         onCopy={handleCopy}
         onCopyShareLink={handleCopyShareLink}
+        onPlayLevel={handlePlayLevel}
         dispatch={dispatch}
       />
     </div>
