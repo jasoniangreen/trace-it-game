@@ -48,14 +48,14 @@ describe('WinModal', () => {
     expect(screen.queryByText('Next Level')).not.toBeInTheDocument()
   })
 
-  it('does not render Share button when shareUrl absent', () => {
+  it('does not render Share Result button when shareUrl absent', () => {
     render(<WinModal {...baseProps} />)
-    expect(screen.queryByText('Share')).not.toBeInTheDocument()
+    expect(screen.queryByText('Share Result')).not.toBeInTheDocument()
   })
 
   it('renders Share button when shareUrl provided', () => {
     render(<WinModal {...baseProps} shareUrl="https://example.com/#play/abc" />)
-    expect(screen.getByText('Share')).toBeInTheDocument()
+    expect(screen.getByText('Share Result')).toBeInTheDocument()
   })
 
   describe('shared play mode (shareUrl present)', () => {
@@ -80,7 +80,7 @@ describe('WinModal', () => {
       const user = userEvent.setup()
       render(<WinModal {...baseProps} shareUrl={shareUrl} />)
       const writeText = spyClipboard()
-      await user.click(screen.getByText('Share'))
+      await user.click(screen.getByText('Share Result'))
       expect(writeText).toHaveBeenCalledOnce()
       const [text] = writeText.mock.calls[0] as [string]
       expect(text).toContain('Trace It ⚡')
@@ -91,28 +91,28 @@ describe('WinModal', () => {
       const user = userEvent.setup()
       render(<WinModal {...baseProps} shareUrl={shareUrl} />)
       spyClipboard()
-      await user.click(screen.getByText('Share'))
+      await user.click(screen.getByText('Share Result'))
       expect(screen.getByText('Copied!')).toBeInTheDocument()
     })
 
-    it('reverts to "Share" after 1.5s', async () => {
+    it('reverts to "Share Result" after 1.5s', async () => {
       vi.useFakeTimers()
       render(<WinModal {...baseProps} shareUrl={shareUrl} />)
       spyClipboard()
       await act(async () => {
-        fireEvent.click(screen.getByText('Share'))
+        fireEvent.click(screen.getByText('Share Result'))
         await Promise.resolve()
         await Promise.resolve()
       })
       act(() => { vi.advanceTimersByTime(1500) })
-      expect(screen.getByText('Share')).toBeInTheDocument()
+      expect(screen.getByText('Share Result')).toBeInTheDocument()
     })
 
     it('silently fails when clipboard unavailable', async () => {
       const user = userEvent.setup()
       render(<WinModal {...baseProps} shareUrl={shareUrl} />)
       spyClipboard(new Error('denied'))
-      await expect(user.click(screen.getByText('Share'))).resolves.not.toThrow()
+      await expect(user.click(screen.getByText('Share Result'))).resolves.not.toThrow()
       expect(screen.queryByText('Copied!')).not.toBeInTheDocument()
     })
   })
@@ -130,7 +130,7 @@ describe('WinModal', () => {
       Object.defineProperty(navigator, 'share', { value: shareSpy, configurable: true })
       const user = userEvent.setup()
       render(<WinModal {...baseProps} shareUrl={shareUrl} />)
-      await user.click(screen.getByText('Share'))
+      await user.click(screen.getByText('Share Result'))
       expect(shareSpy).toHaveBeenCalledOnce()
       expect(shareSpy.mock.calls[0][0].text).toContain('Trace It ⚡')
       // Should not show "Copied!" — native share has its own confirmation
@@ -142,7 +142,7 @@ describe('WinModal', () => {
       Object.defineProperty(navigator, 'share', { value: shareSpy, configurable: true })
       const user = userEvent.setup()
       render(<WinModal {...baseProps} shareUrl={shareUrl} />)
-      await expect(user.click(screen.getByText('Share'))).resolves.not.toThrow()
+      await expect(user.click(screen.getByText('Share Result'))).resolves.not.toThrow()
     })
   })
 })
